@@ -6,7 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints\Uuid;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -20,17 +20,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     //Attributes
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column]
     private string $id; //UUID
-
+    #[ORM\Column]
     private string $lastname;
-
+    #[ORM\Column]
     private string $firstname;
-
     #[ORM\Column(length: 180, unique: true)]
     private string $email;
-
     #[ORM\Column]
     private array $roles = [USER::USER]; //every user has at least ROLE_USER
 
@@ -43,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     //Constructor
     public function __construct(string $lastname, string $firstname, string $email, string $password)
     {
-        $this->id = Uuid::V4_RANDOM;
+        $this->id = Uuid::v4();
         $this->lastname = $lastname;
         $this->firstname = $firstname;
         $this->email = $email;
