@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\RestaurantRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
 
+#[ORM\Entity(repositoryClass: RestaurantRepository::class)]
+#[ORM\Table(name: '`restaurant`')]
 class Restaurant
 {
     //Attributes
