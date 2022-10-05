@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
@@ -35,9 +37,16 @@ class Restaurant
     private string $password;
     #[ORM\Column (name: "tvaNumber", type: "string")]
     private string $tvaNumber;
+    #[ORM\ManyToOne(inversedBy: 'restaurant')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Order::class, orphanRemoval: true)]
+    private Collection $order;
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Dish::class, orphanRemoval: true)]
+    private Collection $dish;
 
     //Constructor
-    public function __construct(string $name, string $type, string $address, string $city, int $postalCode, string $country, string $email, string $password, string $tvaNumber)
+    public function __construct(string $name, string $type, string $address, string $city, int $postalCode, string $country, string $email, string $password, string $tvaNumber, User $user)
     {
         $this->id = Uuid::v4();
         $this->name = $name;
@@ -49,6 +58,9 @@ class Restaurant
         $this->email = $email;
         $this->password = $password;
         $this->tvaNumber = $tvaNumber;
+        $this->user = $user;
+        $this->order = new ArrayCollection();
+        $this->dish = new ArrayCollection();
     }
 
     //Getters
@@ -102,6 +114,27 @@ class Restaurant
         return $this->tvaNumber;
     }
 
+    /**
+     * @return iterable<Order>
+     */
+    public function getOrder(): iterable
+    {
+        return $this->order;
+    }
+
+    /**
+     * @return iterable<Dish>
+     */
+    public function getDish(): iterable
+    {
+        return $this->dish;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
     //Setters
     public function setType(string $type): void
     {
@@ -136,5 +169,13 @@ class Restaurant
     public function setPassword(string $password): void
     {
         $this->password = $password;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $order
+     */
+    public function setOrder(ArrayCollection|Collection $order): void
+    {
+        $this->order = $order;
     }
 }

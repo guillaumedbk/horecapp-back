@@ -24,6 +24,12 @@ class Dish
     private string $category;
     #[ORM\Column(name: "reference", unique: true)]
     private string $reference;
+    #[ORM\ManyToOne(inversedBy: 'dish')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Restaurant $restaurant = null;
+    #[ORM\ManyToOne(inversedBy: 'dish')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Order $order = null;
 
     //Constructor
     public function __construct(string $name, int $price, string $category, string $reference)
@@ -60,6 +66,16 @@ class Dish
         return $this->reference;
     }
 
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function getOrder(): ?Order
+    {
+        return $this->order;
+    }
+
     //Setters
     public function setName(string $name): void
     {
@@ -75,4 +91,16 @@ class Dish
     {
         $this->category = $category;
     }
+
+    public function setRestaurant(?Restaurant $restaurant): void
+    {
+        $this->restaurant = $restaurant;
+    }
+
+    public function setOrder(Order $order): void
+    {
+        $this->order = $order;
+    }
+
+
 }

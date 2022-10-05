@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,7 +34,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $email;
     #[ORM\Column]
     private array $roles = [USER::USER]; //every user has at least ROLE_USER
-
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class, orphanRemoval: true)]
+    private Collection $order;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Restaurant::class, orphanRemoval: true)]
+    private Collection $restaurant;
     /**
      * @var string The hashed password
      */
@@ -47,9 +52,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->firstname = $firstname;
         $this->email = $email;
         $this->password = $password;
+        $this->order = new ArrayCollection();
+        $this->restaurant = new ArrayCollection();
     }
 
-    //Getters & Setters
+    //Getters
     public function getId(): string
     {
         return $this->id;
@@ -88,13 +95,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($this->roles);
     }
 
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
     /**
      * @see PasswordAuthenticatedUserInterface
      */
@@ -103,12 +103,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
+    /**
+     * @return iterable<Order>
+     */
+    public function getOrder(): iterable
+    {
+        return $this->order;
+    }
+
+    /**
+     * @return iterable<Restaurant>
+     */
+    public function getRestaurant(): iterable
+    {
+        return $this->restaurant;
+    }
+
+    //Setters
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
     public function setPassword(string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
+
 
     /**
      * @see UserInterface
