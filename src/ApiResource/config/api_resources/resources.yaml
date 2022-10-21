@@ -1,0 +1,7 @@
+resources:
+  App\Entity\Dish:
+    shortName: 'Dish'
+    description: "Un plat de la carte d'un restaurant pouvant être commandé par un client"
+    collectionOperations:
+      get:
+        method: 'GET'
