@@ -1,0 +1,6 @@
+# api/config/api_platform/resources.yaml
+resources:
+  App\Entity\Dish:
+    shortName: 'Dish'
+    description: 'A dish that can be added to a restaurant is menu or ordered by a client'
+    types: ['https://schema.org/Dish']
